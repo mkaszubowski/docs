@@ -1,0 +1,12 @@
+<h1>All documents</h1>
+
+<ul>
+  <%= for document <- @documents do %>
+    <li>
+      <h2><%= document.name %></h2>
+      <p>
+        <%= document.content %>
+      </p>
+    </li>
+  <% end %>
+</ul>
