@@ -14,5 +14,7 @@ defmodule Docs.Document do
   def changeset(model, params \\ :empty) do
     model
     |> cast(params, @required_fields, @optional_fields)
+    |> update_change(:name, &String.lstrip/1)
+    |> validate_length(:name, min: 1, message: "Can't be blank")
   end
 end
