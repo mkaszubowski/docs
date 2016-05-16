@@ -9,13 +9,20 @@ defmodule Docs.DocumentControllerTest do
     {:ok, document: document}
   end
 
-  test "GET /documents", %{conn: conn, document: document} do
+  test "GET /documents", %{document: document} do
     conn = get conn, "/documents"
 
     assert html_response(conn, 200) =~ "document1"
   end
 
-  test "POST /documents", %{conn: conn} do
+  test "GET /documents/:id", %{document: document} do
+    conn = get conn, "/documents/#{document.id}"
+
+    assert html_response(conn, 200) =~ "document1"
+    assert html_response(conn, 200) =~ "<textarea"
+  end
+
+  test "POST /documents" do
     params = %{name: "document"}
     conn = post conn, "/documents", document: params
 

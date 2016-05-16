@@ -3,6 +3,17 @@ defmodule Docs.DocumentController do
 
   alias Docs.{Repo, Document}
 
+  def show(conn, %{"id" => id}) do
+    id = String.to_integer(id)
+
+    case Repo.get(Document, id) do
+      %Document{} = document ->
+        render(conn, "show.html", document: document)
+      _ ->
+        redirect(conn, to: document_path(conn, :index))
+    end
+  end
+
   def index(conn, _params) do
     documents = Repo.all(Document)
 

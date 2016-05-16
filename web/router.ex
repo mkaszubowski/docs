@@ -18,7 +18,7 @@ defmodule Docs.Router do
 
     get "/", PageController, :index
 
-    resources "/documents", DocumentController, only: [:index, :create]
+    resources "/documents", DocumentController, only: [:index, :create, :show]
   end
 
   # Other scopes may use custom stacks.
