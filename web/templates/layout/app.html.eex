@@ -9,6 +9,8 @@
 
     <title>Hello Docs!</title>
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
+
+
   </head>
 
   <body>
@@ -30,6 +32,7 @@
       </main>
 
     </div> <!-- /container -->
+    <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
     <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
   </body>
 </html>
