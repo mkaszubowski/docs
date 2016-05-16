@@ -12,13 +12,14 @@ class App {
       .receive( "ok",    () => console.log("Connected") )
 
     $('#text').on('keyup', e => {
-      channel.push("new:content", {
-        content: $('#text').val(),
-      })
+      if ((e.keyCode >= 32 && e.keyCode <= 126) || e.keyCode == 13) {
+        channel.push("new:content", {
+          content: $('#text').val(),
+        })
+      }
     })
 
     channel.on( "new:content", msg => {
-      console.log(msg)
       $('#text').val(msg.content);
     })
   }
