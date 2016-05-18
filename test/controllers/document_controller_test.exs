@@ -35,4 +35,10 @@ defmodule Docs.DocumentControllerTest do
     assert document.name == "document"
     assert redirected_to(conn) == document_path(conn, :index)
   end
+
+  test "DELETE /documents/:id", %{document: document} do
+    delete conn, "/documents/#{document.id}"
+
+    assert Repo.get(Document, document.id) == nil
+  end
 end
