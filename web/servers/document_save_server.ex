@@ -1,7 +1,5 @@
 defmodule Docs.DocumentSaveServer do
   use GenServer
-  use Docs.Web, :channel
-
 
   alias Docs.{Repo, Document}
 
@@ -45,9 +43,9 @@ defmodule Docs.DocumentSaveServer do
 
     case Repo.update(changeset) do
       {:ok, doc} ->
-        broadcast! socket, "document:saved", %{}
+        Phoenix.Channel.broadcast! socket, "document:saved", %{}
       {:error, reason} ->
-        broadcast! socket, "document:save-error", %{reason: reason}
+        Phoenix.Channel.broadcast! socket, "document:save-error", %{reason: reason}
         IO.puts(inspect reason)
     end
 
