@@ -1,4 +1,4 @@
 <h1><%= @document.name %></h1>
 
-<input value=<%= @document.id %> id="document-id">
+<input type="hidden" value=<%= @document.id %> id="document-id">
 <textarea id="text" rows="20"><%= @document.content %></textarea>
