@@ -8,19 +8,23 @@ class App {
     socket.connect()
     socket.onClose( e => console.log("Closed connection") )
 
-    let carretPosition = null;
+    let selectionStart, selectionEnd;
 
-    var channel = socket.channel("docs:test", {})
+    const id = $('#document-id').val();
+
+    var channel = socket.channel("docs:test", {id: id})
     channel.join()
       .receive( "error", () => console.log("Connection error") )
       .receive( "ok",    () => console.log("Connected") )
 
     $('#text').on('keyup', e => {
-      if ((e.keyCode >= 32 && e.keyCode <= 126) || e.keyCode == 13) {
-        carretPosition = $('#text')[0].selectionStart;
+      if ((e.keyCode >= 32 && e.keyCode <= 126) || e.keyCode == 13 || e.keyCode == 8) {
+        selectionStart = $('#text')[0].selectionStart;
+        selectionEnd = $('#text')[0].selectionEnd;
 
         channel.push("new:content", {
           content: $('#text').val(),
+          id: id,
         })
       }
     })
@@ -28,7 +32,7 @@ class App {
     channel.on( "new:content", msg => {
       $('#text').val(msg.content);
 
-      setSelectionRange($('#text')[0], carretPosition, carretPosition);
+      setSelectionRange($('#text')[0], selectionStart, selectionEnd);
     })
   }
 }
