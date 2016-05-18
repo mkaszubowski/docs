@@ -31,7 +31,7 @@ defmodule Docs.DocumentSaveServer do
   def handle_cast({:update, content}, %{timer: timer, document_id: document_id}) do
     if timer, do: :erlang.cancel_timer(timer)
 
-    timer = Process.send_after(self(), :save, 5000)
+    timer = Process.send_after(self(), :save, 2500)
 
     {:noreply, %{timer: timer, document_id: document_id, content: content}}
   end

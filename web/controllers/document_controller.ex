@@ -16,8 +16,9 @@ defmodule Docs.DocumentController do
 
   def index(conn, _params) do
     documents = Repo.all(Document)
+    changeset = Document.changeset(%Document{})
 
-    render(conn, "index.html", documents: documents)
+    render(conn, "index.html", documents: documents, changeset: changeset)
   end
 
   def create(conn, %{"document" => params}) do
@@ -26,7 +27,7 @@ defmodule Docs.DocumentController do
     if changeset.valid? do
       case Repo.insert(changeset) do
         {:ok, document} ->
-          redirect(conn, to: document_path(conn, :index))
+          redirect(conn, to: document_path(conn, :show, document))
       end
     end
     redirect(conn, to: document_path(conn, :index))
