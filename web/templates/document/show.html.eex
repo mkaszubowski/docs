@@ -1,4 +1,6 @@
 <h1><%= @document.name %></h1>
 
+<%= link "Delete", to: document_path(@conn, :delete, @document), method: :delete %>
+
 <input type="hidden" value=<%= @document.id %> id="document-id">
 <textarea id="text" rows="20"><%= @document.content %></textarea>

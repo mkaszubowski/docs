@@ -1,3 +1,4 @@
+import "phoenix_html";
 import { Socket } from "phoenix" ;
 
 import { setSelectionRange } from './setSelectionRange';

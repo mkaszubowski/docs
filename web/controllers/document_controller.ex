@@ -8,7 +8,7 @@ defmodule Docs.DocumentController do
 
     case Repo.get(Document, id) do
       %Document{} = document ->
-        render(conn, "show.html", document: document)
+        render(conn, "show.html", document: document, conn: conn)
       _ ->
         redirect(conn, to: document_path(conn, :index))
     end
@@ -27,9 +27,30 @@ defmodule Docs.DocumentController do
     if changeset.valid? do
       case Repo.insert(changeset) do
         {:ok, document} ->
-          redirect(conn, to: document_path(conn, :show, document))
+          conn
+          |> put_flash(:info, "Document created")
+          |> redirect(to: document_path(conn, :show, document))
+        {:error, _} ->
+          conn
+          |> put_flash(:info, "Could not create the document")
+          |> redirect(to: document_path(conn, :index))
       end
     end
     redirect(conn, to: document_path(conn, :index))
+  end
+
+  def delete(conn, %{"id" => id}) do
+    document = Repo.get(Document, String.to_integer(id))
+
+    case Repo.delete(document) do
+      {:ok, _} ->
+        conn
+        |> put_flash(:info, "Document deleted")
+        |> redirect(to: document_path(conn, :index))
+      {:error, _} ->
+        conn
+        |> put_flash(:error, "Could not delete the document")
+        |> redirect(to: document_path(conn, :index))
+    end
   end
 end
