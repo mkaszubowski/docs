@@ -4,7 +4,6 @@ defmodule Docs.UserSocket do
   channel "docs:*", Docs.DocsChannel
 
   transport :websocket, Phoenix.Transports.WebSocket
-  transport :longpoll, Phoenix.Transports.LongPoll
 
   def connect(_params, socket) do
     {:ok, socket}

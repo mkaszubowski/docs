@@ -1,5 +1,7 @@
 defmodule Docs.DocumentSaveServer do
   use GenServer
+  use Docs.Web, :channel
+
 
   alias Docs.{Repo, Document}
 
@@ -15,10 +17,10 @@ defmodule Docs.DocumentSaveServer do
     )
   end
 
-  def update(document_id, content) do
+  def update(document_id, content, socket) do
     document_id
     |> server_name
-    |> GenServer.cast({:update, content})
+    |> GenServer.cast({:update, content, socket})
   end
 
   ## Server Callbacks
@@ -28,21 +30,25 @@ defmodule Docs.DocumentSaveServer do
   end
 
 
-  def handle_cast({:update, content}, %{timer: timer, document_id: document_id}) do
+  def handle_cast({:update, content, socket}, %{timer: timer, document_id: document_id}) do
     if timer, do: :erlang.cancel_timer(timer)
 
     timer = Process.send_after(self(), :save, 2500)
 
-    {:noreply, %{timer: timer, document_id: document_id, content: content}}
+    {:noreply, %{timer: timer, document_id: document_id, content: content, socket: socket}}
   end
 
-  def handle_info(:save, %{document_id: document_id, content: content} = state) do
+  def handle_info(:save, %{document_id: document_id, content: content, socket: socket} = state) do
+    IO.puts("save")
     document = Repo.get(Document, String.to_integer(document_id))
     changeset = Document.changeset(document, %{content: content})
 
     case Repo.update(changeset) do
-      {:ok, doc} -> IO.puts("ok")
-      {:error, reason} -> IO.puts(inspect reason)
+      {:ok, doc} ->
+        broadcast! socket, "document:saved", %{}
+      {:error, reason} ->
+        broadcast! socket, "document:save-error", %{reason: reason}
+        IO.puts(inspect reason)
     end
 
     {:noreply, state}
