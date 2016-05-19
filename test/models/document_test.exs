@@ -1,7 +1,7 @@
 defmodule Docs.DocumentTest do
   use Docs.ModelCase
 
-  alias Docs.{Repo, Document}
+  alias Docs.Document
 
   test "is invalid without the name" do
     changeset = Document.changeset(%Document{}, %{name: ""})
