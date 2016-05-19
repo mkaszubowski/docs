@@ -41,6 +41,11 @@ class App {
     });
     channel.on("document:saved", msg => {
       documentNotSaved = false;
+      $('.document .notification').addClass('visible');
+      setTimeout(() => {
+        $('.document .notification').removeClass('visible');
+      }, 2500);
+
     });
 
     window.onbeforeunload = () => {
