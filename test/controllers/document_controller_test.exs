@@ -12,7 +12,7 @@ defmodule Docs.DocumentControllerTest do
   test "GET /documents", %{document: document} do
     conn = get conn, "/documents"
 
-    assert html_response(conn, 200) =~ "document1"
+    assert html_response(conn, 200) =~ document.name
   end
 
   test "GET /documents/:id", %{document: document} do
