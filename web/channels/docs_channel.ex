@@ -5,7 +5,7 @@ defmodule Docs.DocsChannel do
 
   def join("docs:test", %{"id" => id} = message, socket) do
     send(self, {:after_join, message})
-    {:ok, _pid} = DocumentSaveServer.start_link(id)
+    DocumentSaveServer.start_link(id)
 
     {:ok, socket}
   end
