@@ -24,4 +24,13 @@ defmodule Docs.UserTest do
 
     refute user.crypted_password == @valid_attrs["password"]
   end
+
+  test "email has to be unique" do
+    changeset = User.changeset(%User{}, %{email: "foo@bar.com", password: "foobar"})
+    Repo.insert!(changeset)
+
+    {status, _} = Repo.insert(changeset)
+
+    assert status == :error
+  end
 end
