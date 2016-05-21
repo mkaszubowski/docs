@@ -3,8 +3,8 @@ defmodule Docs.UserTest do
 
   alias Docs.{Repo, User}
 
-  @valid_attrs %{email: "foo@bar.com", password: "foobar123", name: "Foobar"}
-  @invalid_attrs %{email: "", password: ""}
+  @valid_attrs %{"email" => "foo@bar.com", "password" => "foobar123", "name" => "Foobar"}
+  @invalid_attrs %{"email" => "", "password" => ""}
 
   test "is valid without the name" do
     changeset = User.changeset(%User{}, @valid_attrs)
@@ -26,7 +26,11 @@ defmodule Docs.UserTest do
   end
 
   test "email has to be unique" do
-    changeset = User.changeset(%User{}, %{email: "foo@bar.com", password: "foobar"})
+    changeset = User.changeset(
+      %User{},
+      %{"email" => "foo@bar.com", "password" => "foobar"}
+    )
+
     Repo.insert!(changeset)
 
     {status, _} = Repo.insert(changeset)

@@ -1,0 +1,8 @@
+<h1>Sign up</h1>
+
+<%= form_for @conn, registration_path(@conn, :create), [as: :user], fn f -> %>
+  <%= text_input f, :email, placeholder: "Email" %>
+  <%= text_input f, :name, placeholder: "Name" %>
+  <%= password_input f, :password, placeholder: "Password" %>
+  <%= submit "Create", class: "btn btn-primary" %>
+<% end %>

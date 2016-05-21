@@ -19,6 +19,9 @@ defmodule Docs.Router do
     get "/", PageController, :index
 
     resources "/documents", DocumentController, except: [:new, :edit, :update]
+
+    get "/signup", RegistrationController, :new
+    post "/signup", RegistrationController, :create
   end
 
   # Other scopes may use custom stacks.
