@@ -21,7 +21,7 @@ defmodule Docs.User do
     |> put_change(:crypted_password, hashed_password(params["password"]))
     |> update_change(:email, &String.downcase/1)
     |> validate_length(:email, min: 1, message: "Can't be blank")
-    |> unique_constraint(:email, message: "asdads")
+    |> unique_constraint(:email, message: "Email already taken")
   end
 
   defp hashed_password(password) do
