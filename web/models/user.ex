@@ -2,6 +2,7 @@ defmodule Docs.User do
   use Docs.Web, :model
 
   alias Comeonin.Bcrypt
+  alias Docs.UserDocument
 
   schema "users" do
     field :email, :string
@@ -10,6 +11,9 @@ defmodule Docs.User do
     field :crypted_password, :string
 
     timestamps
+
+    has_many :users_documents, UserDocument
+    has_many :documents, through: [:users_documents, :document]
   end
 
   @required_fields ~w(email password)

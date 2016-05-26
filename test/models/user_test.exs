@@ -1,7 +1,7 @@
 defmodule Docs.UserTest do
   use Docs.ModelCase
 
-  alias Docs.{Repo, User}
+  alias Docs.{Repo, User, Document, UserDocument}
 
   @valid_attrs %{"email" => "foo@bar.com", "password" => "foobar123", "name" => "Foobar"}
   @invalid_attrs %{"email" => "", "password" => ""}
@@ -36,5 +36,16 @@ defmodule Docs.UserTest do
     {status, _} = Repo.insert(changeset)
 
     assert status == :error
+  end
+
+  test "has many documents" do
+    user     = Repo.insert!(%User{email: "foo@bar.com", password: "foobar"})
+    doc      = Repo.insert!(%Document{name: "doc", content: "test"})
+    
+    {:ok, _} = Repo.insert(%UserDocument{
+        user_id: user.id, document_id: doc.id, type: "edit"
+      })
+
+    assert Repo.preload(user, [:documents]).documents == [doc]
   end
 end
