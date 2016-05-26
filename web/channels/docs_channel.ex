@@ -11,10 +11,28 @@ defmodule Docs.DocsChannel do
   end
 
   def handle_in("new:content", %{"id" => id, "content" => content}, socket) do
-    broadcast! socket, "new:content", %{content: content}
+    broadcast!(socket, "new:content", %{content: content})
 
     DocumentSaveServer.update(id, content, socket)
 
+    content
+    |> expressions
+    |> Enum.map(fn(expr) ->
+        value = Expr.eval!(expr)
+        broadcast!(socket, "replace:expression", %{expression: expr, value: value})
+    end)
+
     {:noreply, socket}
+  end
+
+  defp expressions(content) do
+    Regex.scan(~r/{{[^}]*}}/, content)
+    |> Enum.map(&List.first/1)
+    |> Enum.map(fn call ->
+      Regex.named_captures(~r/{{(?<expression>[^}]*)}}/, call)
+    end)
+    |> Enum.map(fn x -> x["expression"] end)
+    |> Enum.map(&String.strip/1)
+    |> Enum.uniq
   end
 end

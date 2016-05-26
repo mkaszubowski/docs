@@ -39,6 +39,15 @@ class App {
 
       setSelectionRange($('#text')[0], selectionStart, selectionEnd);
     });
+    channel.on( "replace:expression", msg => {
+      const expr = '{{' + msg["expression"] + '}}'
+      const value = msg["value"][0]
+
+      let content = $("#text").val().replace(expr, value)
+
+      $('#text').val(content);
+      setSelectionRange($('#text')[0], selectionStart, selectionEnd);
+    });
     channel.on("document:saved", msg => {
       documentNotSaved = false;
       $('.document .notification').addClass('visible');
