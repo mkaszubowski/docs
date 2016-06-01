@@ -14,8 +14,19 @@
   <body>
     <header class="main-header">
       <div class="container">
-        Docs
+        <section id="logo">
+          Docs
+        </section>
+        <section class="auth">
+          <% IO.puts(inspect @conn.assigns) %>
+          <%= if @conn.assigns[:current_user] do %>
+            <%= link("Sign out", to: auth_path(@conn, :delete)) %>
+          <% else %>
+            <a href="/auth/google">Sign in</a>
+          <% end %>
+        </section>
       </div>
+
     </header>
     <div class="container">
       <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>

@@ -19,7 +19,7 @@ defmodule Docs.Mixfile do
   def application do
     [mod: {Docs, []},
      applications: [:phoenix, :phoenix_html, :cowboy, :logger, :gettext,
-                    :phoenix_ecto, :postgrex]]
+                    :phoenix_ecto, :postgrex, :ueberauth_google]]
   end
 
   # Specifies which paths to compile per environment.
@@ -38,7 +38,9 @@ defmodule Docs.Mixfile do
      {:gettext, "~> 0.9"},
      {:comeonin, "~> 1.0"},
      {:cowboy, "~> 1.0"},
-     {:expr, "~> 0.1.0"}]
+     {:expr, "~> 0.1.0"},
+     {:ueberauth_google, "~> 0.2"},
+   ]
   end
 
   # Aliases are shortcut or tasks specific to the current project.
