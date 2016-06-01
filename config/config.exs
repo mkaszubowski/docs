@@ -37,4 +37,6 @@ config :ueberauth, Ueberauth.Strategy.Google.OAuth,
   client_id: System.get_env("GOOGLE_CLIENT_ID"),
   client_secret: System.get_env("GOOGLE_CLIENT_SECRET")
 
- 
+config :docs,
+       mailgun_domain: System.get_env("MAILGUN_DOMAIN"),
+       mailgun_key: System.get_env("MAILGUN_API_KEY")

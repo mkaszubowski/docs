@@ -40,6 +40,8 @@ defmodule Docs.Mixfile do
      {:cowboy, "~> 1.0"},
      {:expr, "~> 0.1.0"},
      {:ueberauth_google, "~> 0.2"},
+     {:mailgun, "~> 0.1.2"},
+     {:poison, "~> 2.1", override: true},
    ]
   end
 
