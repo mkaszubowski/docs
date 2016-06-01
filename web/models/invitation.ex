@@ -1,7 +1,7 @@
-defmodule Docs.UserDocument do
+defmodule Docs.Invitation do
   use Docs.Web, :model
 
-  schema "users_documents" do
+  schema "invitations" do
     belongs_to :user, Docs.User
     belongs_to :document, Docs.Document
     field :type, :string

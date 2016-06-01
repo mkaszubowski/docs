@@ -1,11 +1,16 @@
 defmodule Docs.Document do
   use Docs.Web, :model
 
+  alias Docs.Invitation
+
   schema "documents" do
     field :name, :string
     field :content, :string
 
     timestamps
+
+    has_many :invitations, Invitation
+    has_many :users, through: [:invitations, :user]
   end
 
   @required_fields ~w(name)
