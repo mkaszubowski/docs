@@ -25,6 +25,8 @@ defmodule Docs.Document do
   end
 
   def for_user(query, user_id) do
-    from(d in query, where: d.owner_id == ^user_id)
+    from(d in query,
+      left_join: user in assoc(d, :users),
+      where: d.owner_id == ^user_id or user.id == ^user_id)
   end
 end
