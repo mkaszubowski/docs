@@ -15,7 +15,11 @@ defmodule Docs.DocumentController do
   end
 
   def index(conn, _params) do
-    documents = Repo.all(Document)
+    documents =
+      Document
+      |> Document.for_user(conn.assigns.current_user.id)
+      |> Repo.all
+      
     changeset = Document.changeset(%Document{})
 
     render(conn, "index.html", documents: documents, changeset: changeset)
