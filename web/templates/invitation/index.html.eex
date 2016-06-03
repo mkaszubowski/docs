@@ -1,9 +1,9 @@
 <h1><%= @document.name %> - invited users</h1>
 
 <%= form_for @changeset, document_invitation_path(@conn, :create, @document), fn f -> %>
-  <%= text_input f, :email %>
-  <%= text_input f, :type %>
-  <%= submit "Create", class: "btn btn-primary" %>
+  <%= text_input f, :email, placeholder: "Email" %>
+  <%= text_input f, :type, placeholder: "Type" %>
+  <%= submit "Invite", class: "btn btn-primary" %>
 
 <% end %>
 
