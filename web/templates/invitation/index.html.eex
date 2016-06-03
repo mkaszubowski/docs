@@ -1,0 +1,14 @@
+<h1><%= @document.name %> - invited users</h1>
+
+<%= form_for @changeset, document_invitation_path(@conn, :create, @document), fn f -> %>
+  <%= text_input f, :email %>
+  <%= text_input f, :type %>
+  <%= submit "Create", class: "btn btn-primary" %>
+
+<% end %>
+
+<ul>
+  <%= for invitation <- @invitations do %>
+    <li><%= invitation.user.name %> - <%= invitation.type %></li>
+  <% end %>
+</ul>

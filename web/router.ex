@@ -30,6 +30,8 @@ defmodule Docs.Router do
 
     resources "/documents", DocumentController, except: [:new, :edit, :update] do
       resources "/invitations", InvitationController, only: [:index, :create]
+
+      get "/invitations/accept", InvitationController, :accept
     end
   end
 
