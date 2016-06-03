@@ -3,7 +3,7 @@
   <h1><%= @document.name %></h1>
 
   <%= link "Delete", to: document_path(@conn, :delete, @document), method: :delete %> |
-  <%= link "View invitations", to: document_invitation_path(@conn, :index, @document.id) %>
+  <%= invitations_link(@conn, @document) %>
 
 
   <p class="notification">Document saved</p>
