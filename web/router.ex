@@ -21,12 +21,11 @@ defmodule Docs.Router do
 
   scope "/", Docs do
     pipe_through :browser # Use the default browser stack
-
-    get "/", PageController, :index
   end
 
   scope "/", Docs do
     pipe_through [:browser, :require_authenticated]
+    get "/", DocumentController, :index
 
     resources "/documents", DocumentController, except: [:new, :edit, :update] do
       resources "/invitations", InvitationController, only: [:index, :create]
@@ -37,6 +36,8 @@ defmodule Docs.Router do
 
   scope "/auth", Docs do
     pipe_through :browser
+
+    get "/login", AuthController, :login
 
     get "/logout", AuthController, :delete
     get "/:provider", AuthController, :request

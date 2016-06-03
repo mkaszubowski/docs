@@ -10,7 +10,7 @@ defmodule Docs.Plugs.Authenticate do
     else
       conn
         |> put_flash(:error, 'You need to be signed in to view this page.')
-        |> redirect(to: "/")
+        |> redirect(to: "/auth/login")
     end
   end
 end

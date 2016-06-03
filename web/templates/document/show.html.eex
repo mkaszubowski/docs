@@ -2,7 +2,9 @@
   <%= link "< All documents", to: document_path(@conn, :index) %>
   <h1><%= @document.name %></h1>
 
-  <%= link "Delete", to: document_path(@conn, :delete, @document), method: :delete %>
+  <%= link "Delete", to: document_path(@conn, :delete, @document), method: :delete %> |
+  <%= link "View invitations", to: document_invitation_path(@conn, :index, @document.id) %>
+
 
   <p class="notification">Document saved</p>
 

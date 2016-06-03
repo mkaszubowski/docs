@@ -56,12 +56,12 @@ defmodule Docs.InvitationController do
       case Repo.insert(changeset) do
         {:ok, invitation} ->
           conn
-          |> put_flash(:info, "User invited to #{invitation["type"]} the document")
-          |> redirect(to: document_path(conn, document_id))
+          |> put_flash(:info, "User invited to #{invitation.type} the document")
+          |> redirect(to: document_path(conn, :show, document_id))
         {:error, _reason} ->
           conn
           |> put_flash(:error, "Could not invite this user")
-          |> redirect(to: document_path(conn, document_id))
+          |> redirect(to: document_path(conn, :show, document_id))
       end
     end
   end
