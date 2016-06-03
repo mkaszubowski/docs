@@ -3,29 +3,38 @@ defmodule Docs.DocumentController do
 
   alias Docs.{Repo, Document}
 
-  def show(conn, %{"id" => id}) do
+  def action(conn, _) do
+    args = [conn, conn.params, conn.assigns[:current_user]]
+    apply(__MODULE__, action_name(conn), args)
+  end
+
+  def show(conn, %{"id" => id}, current_user) do
     id = String.to_integer(id)
 
     case Repo.get(Document, id) do
       %Document{} = document ->
-        render(conn, "show.html", document: document, conn: conn)
+        check_document_permissions(conn, document)
+
+        render(conn, "show.html",
+          document: document, conn: conn, current_user: current_user)
       _ ->
         redirect(conn, to: document_path(conn, :index))
     end
   end
 
-  def index(conn, _params) do
+  def index(conn, params, _current_user) do
     documents =
       Document
+      |> Document.search(params["search"])
       |> Document.for_user(conn.assigns.current_user.id)
       |> Repo.all
-      
+
     changeset = Document.changeset(%Document{})
 
     render(conn, "index.html", documents: documents, changeset: changeset)
   end
 
-  def create(conn, %{"document" => params}) do
+  def create(conn, %{"document" => params}, current_user) do
     changeset = Document.changeset(%Document{}, params)
 
     if changeset.valid? do
@@ -43,7 +52,7 @@ defmodule Docs.DocumentController do
     redirect(conn, to: document_path(conn, :index))
   end
 
-  def delete(conn, %{"id" => id}) do
+  def delete(conn, %{"id" => id}, _current_user) do
     document = Repo.get(Document, String.to_integer(id))
 
     case Repo.delete(document) do
@@ -55,6 +64,20 @@ defmodule Docs.DocumentController do
         conn
         |> put_flash(:error, "Could not delete the document")
         |> redirect(to: document_path(conn, :index))
+    end
+  end
+
+  defp check_document_permissions(conn, document) do
+    user_documents_ids =
+      Document
+      |> Document.for_user(conn.assigns.current_user.id)
+      |> Repo.all
+      |> Enum.map(&(&1.id))
+
+    unless Enum.member?(user_documents_ids, document.id) do
+      conn
+      |> put_flash(:error, "You don't have permissions to view this document")
+      |> redirect(to: "/")
     end
   end
 end
