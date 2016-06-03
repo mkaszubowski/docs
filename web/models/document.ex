@@ -29,4 +29,13 @@ defmodule Docs.Document do
       left_join: user in assoc(d, :users),
       where: d.owner_id == ^user_id or user.id == ^user_id)
   end
+
+  def search(query, expression) do
+    case expression do
+      x when x == "" or is_nil(x) -> query
+      _ ->
+        from document in query,
+          where: fragment("? % ?", document.name, ^expression)
+    end
+  end
 end
