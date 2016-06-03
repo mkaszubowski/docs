@@ -9,6 +9,7 @@ defmodule Docs.Document do
 
     timestamps
 
+    belongs_to :owner, User
     has_many :invitations, Invitation
     has_many :users, through: [:invitations, :user]
   end
@@ -21,5 +22,9 @@ defmodule Docs.Document do
     |> cast(params, @required_fields, @optional_fields)
     |> update_change(:name, &String.lstrip/1)
     |> validate_length(:name, min: 1, message: "Can't be blank")
+  end
+
+  def for_user(query, user_id) do
+    from(d in query, where: d.owner_id == ^user_id)
   end
 end
