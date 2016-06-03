@@ -7,8 +7,6 @@ defmodule Docs.User do
   schema "users" do
     field :email, :string
     field :name, :string
-    field :password, :string, virtual: true
-    field :crypted_password, :string
 
     timestamps
 

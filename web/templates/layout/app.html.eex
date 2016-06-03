@@ -18,7 +18,6 @@
           Docs
         </section>
         <section class="auth">
-          <% IO.puts(inspect @conn.assigns) %>
           <%= if @conn.assigns[:current_user] do %>
             <%= link("Sign out", to: auth_path(@conn, :delete)) %>
           <% else %>

@@ -5,7 +5,9 @@ defmodule Docs.Plugs.Authenticate do
   def init(default), do: default
 
   def call(conn, _default) do
-    unless conn.assigns[:current_user] do
+    if conn.assigns[:current_user] do
+      conn
+    else
       conn
         |> put_flash(:error, 'You need to be signed in to view this page.')
         |> redirect(to: "/")
