@@ -3,7 +3,7 @@ import { Socket } from "phoenix";
 import Quill from 'quill';
 
 class App {
-  static init() {
+  static initDocument() {
     let socket = new Socket("/socket")
     let documentNotSaved = false;
 
@@ -83,6 +83,10 @@ class App {
   }
 }
 
-$( () => App.init() )
+$( () => {
+  if ($('#editor').length > 0) {
+    App.initDocument();
+  }
+})
 
 export default App

@@ -10,6 +10,10 @@ form, ul, table {
   margin-bottom: 20px;
 }
 
+body {
+  background-color: #f5f5f5;
+}
+
 /* Phoenix flash messages */
 .alert:empty { display: none; }
 
@@ -41,7 +45,7 @@ form.link, form.button {
 /* Customize container */
 @media (min-width: 768px) {
   .container {
-    max-width: 730px;
+    max-width: 960px;
   }
 }
 .container-narrow > hr {

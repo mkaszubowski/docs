@@ -14,6 +14,11 @@
   <ul>
     <%= for document <- @documents do %>
       <li>
+        <div class="document-preview">
+          <div class="content">
+            <%= raw document.content %>
+          </div>
+        </div>
         <h2><%= link document.name, to: document_path(@conn, :show, document) %></h2>
       </li>
     <% end %>
