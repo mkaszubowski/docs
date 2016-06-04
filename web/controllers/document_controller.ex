@@ -3,9 +3,9 @@ defmodule Docs.DocumentController do
 
   alias Docs.{Repo, Document, Plugs}
 
-  plug Plugs.CheckDocumentPermissions, "id" when action in [:show, :delete]
+  plug Plugs.CheckDocumentPermissions, "id" when action in [:show]
   plug Plugs.RequireDocumentPermission, "view" when action in [:show]
-  plug Plugs.RequireDocumentPermission, "edit" when action in [:delete]
+  plug Plugs.CheckDocumentOwner when action in [:delete]
 
   def action(conn, _) do
     args = [conn, conn.params, conn.assigns[:current_user]]
@@ -36,7 +36,8 @@ defmodule Docs.DocumentController do
   end
 
   def create(conn, %{"document" => params}, current_user) do
-    changeset = Document.changeset(%Document{}, params)
+    changeset = Document.changeset(%Document{},
+      Map.merge(params, %{"owner_id" => current_user.id}))
 
     if changeset.valid? do
       case Repo.insert(changeset) do
