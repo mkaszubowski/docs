@@ -25,13 +25,13 @@ defmodule Docs.DocumentController do
   def index(conn, params, _current_user) do
     documents =
       Document
-      |> Document.search(params["search"])
+      |> Document.search(params["search"]["term"])
       |> Document.for_user(conn.assigns.current_user.id)
       |> Repo.all
 
-    changeset = Document.changeset(%Document{})
-
-    render(conn, "index.html", documents: documents, changeset: changeset)
+    render(conn, "index.html", 
+      documents: documents,
+      changeset: Document.changeset(%Document{}))
   end
 
   def create(conn, %{"document" => params}, current_user) do

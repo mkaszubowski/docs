@@ -6,9 +6,10 @@
 }
 
 .document {
-  textarea {
+  #editor {
     width: 100%;
-    margin: 0 auto;
+    border: 1px solid #ddd;
+    min-height: 300px; 
   }
 
   .notification {

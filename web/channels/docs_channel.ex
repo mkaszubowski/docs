@@ -10,8 +10,18 @@ defmodule Docs.DocsChannel do
     {:ok, socket}
   end
 
-  def handle_in("new:content", %{"id" => id, "content" => content}, socket) do
-    broadcast!(socket, "new:content", %{content: content})
+  def handle_in("new:content", msg, socket) do
+    %{
+      "id" => id,
+      "content" => content,
+      "position" => position,
+      "user_name" => user_name
+    } = msg
+
+    broadcast!(socket, "new:content", %{
+      content: content,
+      position: position,
+      user_name: user_name})
 
     DocumentSaveServer.update(id, content, socket)
 

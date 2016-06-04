@@ -6,6 +6,11 @@
     <%= submit "Create", class: "btn btn-primary" %>
   <% end %>
 
+  <%= form_for @conn, document_path(@conn, :index), [as: :search, method: :get], fn f -> %>
+    <%= text_input f, :term %>
+    <%= submit "Search", class: "btn btn-primary" %>
+  <% end %>
+
   <ul>
     <%= for document <- @documents do %>
       <li>

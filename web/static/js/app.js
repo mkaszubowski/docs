@@ -1,12 +1,19 @@
 import "phoenix_html";
-import { Socket } from "phoenix" ;
-
-import { setSelectionRange } from './setSelectionRange';
+import { Socket } from "phoenix";
+import Quill from 'quill';
 
 class App {
   static init() {
     let socket = new Socket("/socket")
     let documentNotSaved = false;
+
+    var quill = new Quill('#editor', {
+      theme: 'snow',
+    });
+    quill.addModule('toolbar', { container: '#toolbar' });
+    let cursors = quill.addModule('multi-cursor', {
+      timeout: 10000
+    });
 
     socket.connect()
     socket.onClose( e => console.log("Closed connection") )
@@ -14,30 +21,41 @@ class App {
     let selectionStart, selectionEnd;
 
     const id = $('#document-id').val();
+    const userName = $('#user-name').val();
 
     var channel = socket.channel("docs:test", {id: id})
     channel.join()
       .receive( "error", () => console.log("Connection error") )
       .receive( "ok",    () => console.log("Connected") )
 
-    $('#text').on('keyup', e => {
-      if ((e.keyCode >= 32 && e.keyCode <= 126) || e.keyCode == 13 || e.keyCode == 8) {
+    quill.on('text-change', (delta, source) => {
+      if (source === 'user') {
         documentNotSaved = true;
 
-        selectionStart = $('#text')[0].selectionStart;
-        selectionEnd = $('#text')[0].selectionEnd;
+        selectionStart = quill.getSelection().start;
+        selectionEnd = quill.getSelection().end;
 
         channel.push("new:content", {
-          content: $('#text').val(),
+          content: quill.getHTML(),
           id: id,
+          position: selectionEnd,
+          user_name: userName,
         })
       }
     })
 
     channel.on( "new:content", msg => {
-      $('#text').val(msg.content);
+      quill.setHTML(msg['content'])
 
-      setSelectionRange($('#text')[0], selectionStart, selectionEnd);
+      if (msg['user_name'] != userName) {
+        cursors.setCursor(
+          msg['user_name'],
+          msg['position'],
+          msg['user_name'],
+          'rgb(255, 0, 255)'
+        );
+      }
+      quill.setSelection(selectionStart, selectionEnd);
     });
     channel.on( "replace:expression", msg => {
       const expr = '{{' + msg["expression"] + '}}'
@@ -45,8 +63,8 @@ class App {
 
       let content = $("#text").val().replace(expr, value)
 
-      $('#text').val(content);
-      setSelectionRange($('#text')[0], selectionStart, selectionEnd);
+      $('#editor').val(content);
+      quill.setSelection(selectionStart, selectionEnd);
     });
     channel.on("document:saved", msg => {
       documentNotSaved = false;

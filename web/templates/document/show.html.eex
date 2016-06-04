@@ -9,5 +9,14 @@
   <p class="notification">Document saved</p>
 
   <input type="hidden" value=<%= @document.id %> id="document-id">
-  <textarea id="text" rows="20"><%= @document.content %></textarea>
+  <input type="hidden" value=<%= @current_user.name %> id="user-name">
+  <div id="toolbar">
+    <button class="ql-bold">Bold</button>
+    <button class="ql-italic">Italic</button>
+  </div>
+
+  <!-- Create the editor container -->
+  <div id="editor">
+    <%= raw @document.content %>
+  </div>
 </div>
