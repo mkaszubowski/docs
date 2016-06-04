@@ -2,8 +2,12 @@
   <%= link "< All documents", to: document_path(@conn, :index) %>
   <h1><%= @document.name %></h1>
 
-  <%= link "Delete", to: document_path(@conn, :delete, @document), method: :delete %> |
-  <%= invitations_link(@conn, @document) %>
+  <%= if document_owner?(@conn, @document) do %>
+    <%= link "Delete",
+          to: document_path(@conn, :delete, @document), method: :delete %> |
+    <%= link "Menage invitations",
+          to: document_invitation_path(@conn, :index, @document) %>
+  <% end %>
 
 
   <p class="notification">Document saved</p>
@@ -15,7 +19,6 @@
     <button class="ql-italic">Italic</button>
   </div>
 
-  <!-- Create the editor container -->
   <div id="editor">
     <%= raw @document.content %>
   </div>

@@ -1,7 +1,11 @@
 defmodule Docs.DocumentController do
   use Docs.Web, :controller
 
-  alias Docs.{Repo, Document}
+  alias Docs.{Repo, Document, Plugs}
+
+  plug Plugs.CheckDocumentPermissions, "id" when action in [:show, :delete]
+  plug Plugs.RequireDocumentPermission, "view" when action in [:show]
+  plug Plugs.RequireDocumentPermission, "edit" when action in [:delete]
 
   def action(conn, _) do
     args = [conn, conn.params, conn.assigns[:current_user]]
@@ -13,8 +17,6 @@ defmodule Docs.DocumentController do
 
     case Repo.get(Document, id) do
       %Document{} = document ->
-        check_document_permissions(conn, document)
-
         render(conn, "show.html",
           document: document, conn: conn, current_user: current_user)
       _ ->
@@ -22,14 +24,13 @@ defmodule Docs.DocumentController do
     end
   end
 
-  def index(conn, params, _current_user) do
+  def index(conn, params, current_user) do
     documents =
       Document
-      |> Document.search(params["search"]["term"])
-      |> Document.for_user(conn.assigns.current_user.id)
+      |> Document.for_user(current_user.id)
       |> Repo.all
 
-    render(conn, "index.html", 
+    render(conn, "index.html",
       documents: documents,
       changeset: Document.changeset(%Document{}))
   end
@@ -64,20 +65,6 @@ defmodule Docs.DocumentController do
         conn
         |> put_flash(:error, "Could not delete the document")
         |> redirect(to: document_path(conn, :index))
-    end
-  end
-
-  defp check_document_permissions(conn, document) do
-    user_documents_ids =
-      Document
-      |> Document.for_user(conn.assigns.current_user.id)
-      |> Repo.all
-      |> Enum.map(&(&1.id))
-
-    unless Enum.member?(user_documents_ids, document.id) do
-      conn
-      |> put_flash(:error, "You don't have permissions to view this document")
-      |> redirect(to: "/")
     end
   end
 end

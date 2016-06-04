@@ -3,6 +3,8 @@ defmodule Docs.InvitationController do
 
   alias Docs.{Repo, Document, Invitation, TokenGenerator}
 
+  plug Docs.Plugs.CheckDocumentOwner
+
   def index(conn, %{"document_id" => document_id}) do
     document = Repo.get(Document, document_id)
     invitations =
