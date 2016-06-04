@@ -10,7 +10,7 @@ defmodule Docs.Document do
     timestamps
 
     belongs_to :owner, User
-    has_many :invitations, Invitation
+    has_many :invitations, Invitation, on_delete: :delete_all
     has_many :users, through: [:invitations, :user]
   end
 
