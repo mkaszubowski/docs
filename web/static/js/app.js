@@ -5,7 +5,6 @@ import Quill from 'quill';
 class App {
   static initDocument() {
     let socket = new Socket("/socket")
-    let documentNotSaved = false;
 
     var quill = new Quill('#editor', {
       theme: 'snow',
@@ -36,7 +35,6 @@ class App {
 
     quill.on('text-change', (delta, source) => {
       if (source === 'user') {
-        documentNotSaved = true;
 
         selectionStart = quill.getSelection().start;
         selectionEnd = quill.getSelection().end;
@@ -85,20 +83,14 @@ class App {
       $('#editor').val(content);
       quill.setSelection(selectionStart, selectionEnd);
     });
+
     channel.on("document:saved", msg => {
-      documentNotSaved = false;
       $('.document .notification').addClass('visible');
       setTimeout(() => {
         $('.document .notification').removeClass('visible');
       }, 2500);
 
     });
-
-    window.onbeforeunload = () => {
-      if (documentNotSaved) {
-        return "The changes not saved yet";
-      }
-    }
   }
 }
 

@@ -7,7 +7,7 @@ defmodule Docs.ViewingUsersList do
     case GenServer.whereis(server_name(document_id)) do
       nil ->
         Supervisor.start_child(Docs.ViewingUsersListSupervisor, [document_id])
-      _board ->
+      _list ->
         {:error, :users_list_already_exists}
     end
   end

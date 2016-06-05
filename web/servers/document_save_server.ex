@@ -5,6 +5,16 @@ defmodule Docs.DocumentSaveServer do
 
   ## Client API
 
+  def create(document_id) do
+    case GenServer.whereis(server_name(document_id)) do
+      nil ->
+        Supervisor.start_child(Docs.DocumentSaveSupervisor, [document_id])
+      _saver ->
+        {:error, :save_server_already_exists}
+    end
+  end
+
+
   def start_link(document_id) do
     name = server_name(document_id)
 
@@ -37,7 +47,6 @@ defmodule Docs.DocumentSaveServer do
   end
 
   def handle_info(:save, %{document_id: document_id, content: content, socket: socket} = state) do
-    IO.puts("save")
     document = Repo.get(Document, String.to_integer(document_id))
     changeset = Document.changeset(document, %{content: content})
 

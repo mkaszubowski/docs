@@ -6,7 +6,7 @@ defmodule Docs.DocsChannel do
   def join("docs:channel", %{"id" => id} = message, socket) do
     send(self, {:after_join, message})
 
-    DocumentSaveServer.start_link(id)
+    DocumentSaveServer.create(id)
     ViewingUsersList.create(id)
 
     {:ok, socket}
