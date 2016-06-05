@@ -25,15 +25,19 @@ defmodule Docs.Document do
     |> create_owner_invitation(params)
   end
 
-  defp create_owner_invitation(model, params) do
-    case params do
-      %{"owner_id" => owner_id} ->
-        put_assoc(
-          model,
-          :invitations,
-          [%Invitation{user_id: owner_id, type: "edit"}]
-        )
-      :empty -> model
+  defp create_owner_invitation(changeset, params) do
+    case changeset.model.id do
+      nil ->
+        case params do
+          %{"owner_id" => owner_id} ->
+            put_assoc(
+              changeset,
+              :invitations,
+              [%Invitation{user_id: owner_id, type: "edit"}]
+            )
+          :empty -> changeset
+        end
+      _ -> changeset
     end
   end
 
