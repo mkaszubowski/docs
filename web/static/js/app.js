@@ -76,12 +76,15 @@ class App {
 
     channel.on( "replace:expression", msg => {
       const expr = '{{' + msg["expression"] + '}}'
-      const value = msg["value"][0]
+      const value = msg["value"][0];
+      const positionOffset = expr.length - value.toString().length;
 
-      let content = $("#text").val().replace(expr, value)
+      const content = quill.getHTML().replace(expr, value);
 
-      $('#editor').val(content);
-      quill.setSelection(selectionStart, selectionEnd);
+      quill.setHTML(content)
+      quill.setSelection(
+        selectionStart - positionOffset,
+        selectionEnd - positionOffset);
     });
 
     channel.on("document:saved", msg => {
