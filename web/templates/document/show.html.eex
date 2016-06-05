@@ -2,6 +2,12 @@
   <%= link "< All documents", to: document_path(@conn, :index) %>
   <h1><%= @document.name %></h1>
 
+  <section id="viewing-users">
+    <h2>Users viewing this document: </h2>
+    <div class="list">
+    </div>
+  </section>
+
   <%= if document_owner?(@conn, @document) do %>
     <%= link "Delete",
           to: document_path(@conn, :delete, @document), method: :delete %> |
@@ -14,6 +20,7 @@
 
   <input type="hidden" value=<%= @document.id %> id="document-id">
   <input type="hidden" value=<%= @current_user.name %> id="user-name">
+  <input type="hidden" value=<%= @current_user.id %> id="user-id">
   <div id="toolbar">
     <button class="ql-bold">Bold</button>
     <button class="ql-italic">Italic</button>

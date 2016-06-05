@@ -57,6 +57,6 @@ defmodule Docs.DocumentSaveServer do
   end
 
   defp server_name(document_id) do
-    String.to_atom("document-#{document_id}")
+    String.to_atom("document-saver-#{document_id}")
   end
 end

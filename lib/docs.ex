@@ -11,6 +11,7 @@ defmodule Docs do
       supervisor(Docs.Endpoint, []),
       # Start the Ecto repository
       supervisor(Docs.Repo, []),
+      supervisor(Docs.ViewingUsersListSupervisor, []),
       # Here you could define other workers and supervisors as children
       # worker(Docs.Worker, [arg1, arg2, arg3]),
     ]

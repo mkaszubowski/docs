@@ -22,8 +22,14 @@ class App {
 
     const id = $('#document-id').val();
     const userName = $('#user-name').val();
+    const userId = $('#user-id').val();
 
-    var channel = socket.channel("docs:test", {id: id})
+    let channel = socket.channel("docs:channel", {
+      id: id,
+      user_name: userName,
+      user_id: userId
+    });
+
     channel.join()
       .receive( "error", () => console.log("Connection error") )
       .receive( "ok",    () => console.log("Connected") )
@@ -45,6 +51,8 @@ class App {
     })
 
     channel.on( "new:content", msg => {
+      if (msg["document_id"] != id) { return; }
+
       quill.setHTML(msg['content'])
 
       if (msg['user_name'] != userName) {
@@ -57,6 +65,17 @@ class App {
       }
       quill.setSelection(selectionStart, selectionEnd);
     });
+    channel.on( "update:users", msg => {
+      if (msg["document_id"] != id) { return; }
+
+      let list = '';
+      msg.users.filter(user => user.id != userId).map((user) => {
+        list += `<p class='user-${user.id}'>${user.name}</p>`;
+      })
+      $('#viewing-users .list').html(list);
+    });
+
+
     channel.on( "replace:expression", msg => {
       const expr = '{{' + msg["expression"] + '}}'
       const value = msg["value"][0]
