@@ -18,7 +18,10 @@ defmodule Docs.DocumentController do
     case Repo.get(Document, id) do
       %Document{} = document ->
         render(conn, "show.html",
-          document: document, conn: conn, current_user: current_user)
+          document: document,
+          conn: conn,
+          permission: conn.assigns.document_permission,
+          current_user: current_user)
       _ ->
         redirect(conn, to: document_path(conn, :index))
     end
@@ -27,6 +30,7 @@ defmodule Docs.DocumentController do
   def index(conn, params, current_user) do
     documents =
       Document
+      |> Document.search(params["search"]["term"])
       |> Document.for_user(current_user.id)
       |> Repo.all
 

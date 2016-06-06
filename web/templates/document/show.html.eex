@@ -26,7 +26,7 @@
     <button class="ql-italic">Italic</button>
   </div>
 
-  <div id="editor">
+  <div id=<%= if @permission == "edit", do: "editor", else: "read-only" %>>
     <%= raw @document.content %>
   </div>
 </div>
