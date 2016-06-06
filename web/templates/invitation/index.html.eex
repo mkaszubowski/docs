@@ -2,7 +2,7 @@
 
 <%= form_for @changeset, document_invitation_path(@conn, :create, @document), fn f -> %>
   <%= text_input f, :email, placeholder: "Email" %>
-  <%= text_input f, :type, placeholder: "Type" %>
+  <%= select f, :type, ["edit", "view"] %>
   <%= submit "Invite", class: "btn btn-primary" %>
 
 <% end %>
