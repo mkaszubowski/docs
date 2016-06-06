@@ -3,11 +3,12 @@ defmodule Docs.Mailer do
     domain: Application.get_env(:docs, :mailgun_domain),
     key: Application.get_env(:docs, :mailgun_key)
 
-  def send_invitation(email_address, token) do
+  def send_invitation(email_address, link) do
     IO.puts(inspect Application.get_env(:docs, :mailgun_domain))
+    IO.puts(link)
     send_email(to: email_address,
                from: "docs@example.com",
-               subject: "Welcome!",
-               text: "Welcome to HelloPhoenix!")
+               subject: "Invitation",
+               text: link)
   end
 end

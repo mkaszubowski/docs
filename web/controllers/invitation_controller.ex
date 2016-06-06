@@ -48,11 +48,19 @@ defmodule Docs.InvitationController do
   end
 
   def create(conn, %{"document_id" => document_id, "invitation" => invitation}) do
+    token = TokenGenerator.get_token
+
+    Task.start_link(fn ->
+      link = invitation_link(conn, document_id, token)
+      Docs.Mailer.send_invitation(invitation["email"], link)
+    end)
+
     changeset = Invitation.changeset(%Invitation{}, %{
       document_id: document_id,
       type: invitation["type"],
-      token: TokenGenerator.get_token
+      token: token
     })
+
 
     if changeset.valid? do
       case Repo.insert(changeset) do
@@ -66,5 +74,11 @@ defmodule Docs.InvitationController do
           |> redirect(to: document_path(conn, :show, document_id))
       end
     end
+  end
+
+  defp invitation_link(conn, document_id, token) do
+    "#{conn.host}:#{conn.port}" <>
+    document_invitation_accept_path(conn, :accept, document_id) <>
+    "?token=#{token}"
   end
 end
