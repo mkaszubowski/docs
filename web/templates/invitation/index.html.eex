@@ -1,3 +1,5 @@
+<%= link("< Back to document", to: document_path(@conn, :show, @document)) %>
+
 <h1><%= @document.name %> - invited users</h1>
 
 <%= form_for @changeset, document_invitation_path(@conn, :create, @document), fn f -> %>
@@ -9,6 +11,11 @@
 
 <ul>
   <%= for invitation <- @invitations do %>
-    <li><%= invitation.user.name %> - <%= invitation.type %></li>
+    <li>
+      <%= invitation.user.name %> - <%= invitation.type %>
+      <%= link("Delete",
+        to: document_invitation_path(@conn, :delete, @document, invitation),
+        method: :delete) %>
+    </li>
   <% end %>
 </ul>

@@ -9,6 +9,8 @@
 
     <title>Hello Docs!</title>
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
+    <link href="//cdn.quilljs.com/0.19.10/quill.css" rel="stylesheet">
+    <link href="http://cdn.quilljs.com/1.0.0-beta.2/quill.snow.css" rel="stylesheet">
   </head>
 
   <body>

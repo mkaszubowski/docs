@@ -52,6 +52,18 @@
     background: #fff;
   }
 
+  #toolbar {
+    button {
+      width: 50px;
+      border: 1px solid #ddd;
+      margin-right: 5px;
+
+      &.ql-active {
+        background: #ddd;
+      }
+    }
+  }
+
   .notification {
     color: #27ae60;
 

@@ -7,7 +7,6 @@ class App {
     let socket = new Socket("/socket")
 
     var quill = new Quill('#editor', {
-      theme: 'snow',
     });
     quill.addModule('toolbar', { container: '#toolbar' });
     let cursors = quill.addModule('multi-cursor', {
