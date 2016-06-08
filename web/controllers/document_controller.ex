@@ -5,7 +5,7 @@ defmodule Docs.DocumentController do
 
   plug Plugs.CheckDocumentPermissions, "id" when action in [:show]
   plug Plugs.RequireDocumentPermission, "view" when action in [:show]
-  plug Plugs.CheckDocumentOwner when action in [:delete]
+  plug Plugs.CheckDocumentOwner, "id" when action in [:delete]
 
   def action(conn, _) do
     args = [conn, conn.params, conn.assigns[:current_user]]
@@ -30,8 +30,8 @@ defmodule Docs.DocumentController do
   def index(conn, params, current_user) do
     documents =
       Document
-      |> Document.search(params["search"]["term"])
       |> Document.for_user(current_user.id)
+      |> Document.search(params["search"]["term"])
       |> Repo.all
 
     render(conn, "index.html",
