@@ -26,6 +26,7 @@ defmodule Docs.Invitation do
     model
     |> cast(params, @required_fields, @optional_fields)
     |> unique_constraint(:user_id_document_id,
+        name: :users_documents_user_id_document_id_index,
         message: "Invitation already exists")
   end
 
