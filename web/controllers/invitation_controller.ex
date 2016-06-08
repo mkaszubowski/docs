@@ -3,7 +3,7 @@ defmodule Docs.InvitationController do
 
   alias Docs.{Repo, Document, Invitation, TokenGenerator}
 
-  plug Docs.Plugs.CheckDocumentOwner
+  plug Docs.Plugs.CheckDocumentOwner when action in [:index, :create, :delete]
 
   def index(conn, %{"document_id" => document_id}) do
     document = Repo.get(Document, document_id)
@@ -73,6 +73,21 @@ defmodule Docs.InvitationController do
           |> put_flash(:error, "Could not invite this user")
           |> redirect(to: document_path(conn, :show, document_id))
       end
+    end
+  end
+
+  def delete(conn, %{"id" => id, "document_id" => document_id}) do
+    invitation = Repo.get(Invitation, id)
+
+    case Repo.delete(invitation) do
+      {:ok, _} ->
+        conn
+        |> put_flash(:info, "Invitation deleted")
+        |> redirect(to: document_invitation_path(conn, :index, document_id))
+      {:errro, _} ->
+        conn
+        |> put_flash(:error, "Could not delete invitation")
+        |> redirect(to: document_invitation_path(conn, :index, document_id))
     end
   end
 
