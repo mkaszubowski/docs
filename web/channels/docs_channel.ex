@@ -3,17 +3,18 @@ defmodule Docs.DocsChannel do
 
   alias Docs.{DocumentSaveServer, ViewingUsersList}
 
-  def join("docs:channel", %{"id" => id} = message, socket) do
+  def join("docs:" <> id, message, socket) do
     send(self, {:after_join, message})
 
     DocumentSaveServer.create(id)
     ViewingUsersList.create(id)
 
-    {:ok, socket}
+    {:ok, assign(socket, :document_id, id)}
   end
 
   def handle_info({:after_join, message}, socket) do
-    %{"user_id" => user_id, "user_name" => user_name, "id" => document_id} = message
+    %{"user_id" => user_id, "user_name" => user_name} = message
+    document_id = socket.assigns.document_id
 
     user = %{id: user_id, name: user_name}
     users = ViewingUsersList.add_user(document_id, user)

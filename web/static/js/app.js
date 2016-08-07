@@ -22,8 +22,7 @@ class App {
     const userName = $('#user-name').val();
     const userId = $('#user-id').val();
 
-    let channel = socket.channel("docs:channel", {
-      id: id,
+    let channel = socket.channel("docs:" + id, {
       user_name: userName,
       user_id: userId
     });
