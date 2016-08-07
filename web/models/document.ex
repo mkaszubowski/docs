@@ -25,26 +25,26 @@ defmodule Docs.Document do
     |> create_owner_invitation(params)
   end
 
-  defp create_owner_invitation(changeset, params) do
-    case changeset.model.id do
+  defp create_owner_invitation(model, params) do
+    case model.model.id do
       nil ->
         case params do
           %{"owner_id" => owner_id} ->
             put_assoc(
-              changeset,
+              model,
               :invitations,
               [%Invitation{user_id: owner_id, type: "edit"}]
             )
-          :empty -> changeset
+          :empty -> model
         end
-      _ -> changeset
+      _ -> model
     end
   end
 
   def for_user(query, user_id) do
     from(d in query,
       left_join: user in assoc(d, :users),
-      where: d.owner_id == ^user_id or user.id == ^user_id)
+      where: user.id == ^user_id)
   end
 
   def search(query, expression) do
