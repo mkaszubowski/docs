@@ -8,6 +8,7 @@ defmodule Docs.Plugs.AssignCurrentUser do
 
   def call(conn, _default) do
     user_id = get_session(conn, :user_id)
+
     if user_id do
       user = Repo.get(User, user_id)
       assign(conn, :current_user, user)
