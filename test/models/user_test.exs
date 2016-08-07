@@ -1,7 +1,7 @@
 defmodule Docs.UserTest do
   use Docs.ModelCase
 
-  alias Docs.{Repo, User, Document, UserDocument}
+  alias Docs.{Repo, User, Document, Invitation}
 
   @valid_attrs %{"email" => "foo@bar.com", "password" => "foobar123", "name" => "Foobar"}
   @invalid_attrs %{"email" => "", "password" => ""}
@@ -18,13 +18,6 @@ defmodule Docs.UserTest do
     refute changeset.valid?
   end
 
-  test "is does not store password" do
-    changeset = User.changeset(%User{}, @valid_attrs);
-    {:ok, user} = Repo.insert(changeset)
-
-    refute user.crypted_password == @valid_attrs["password"]
-  end
-
   test "email has to be unique" do
     changeset = User.changeset(
       %User{},
@@ -39,10 +32,10 @@ defmodule Docs.UserTest do
   end
 
   test "has many documents" do
-    user     = Repo.insert!(%User{email: "foo@bar.com", password: "foobar"})
+    user     = insert_user()
     doc      = Repo.insert!(%Document{name: "doc", content: "test"})
-    
-    {:ok, _} = Repo.insert(%UserDocument{
+
+    {:ok, _} = Repo.insert(%Invitation{
         user_id: user.id, document_id: doc.id, type: "edit"
       })
 

@@ -7,7 +7,7 @@ defmodule Docs.InvitationTest do
   @invalid_attrs %{}
 
   setup do
-    user = Repo.insert!(%User{email: "foo@bar.com", password: "foobar"})
+    user     = insert_user
     document = Repo.insert!(%Document{content: "test", name: "doc"})
 
     {:ok, %{user: user, document: document}}
@@ -36,6 +36,6 @@ defmodule Docs.InvitationTest do
     {status, reason} = Repo.insert(changeset)
 
     assert status == :error
-    assert reason.errors == [user_id_document_id: "Permission already exists"]
+    assert reason.errors == [user_id_document_id: "Invitation already exists"]
   end
 end
