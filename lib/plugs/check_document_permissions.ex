@@ -17,6 +17,7 @@ defmodule Docs.Plugs.CheckDocumentPermissions do
       nil ->
         conn
         |> put_flash(:error, "You don't have permissions to do that")
+        |> halt()
         |> redirect(to: "/")
       %Invitation{type: type} = invitation ->
         assign(conn, :document_permission, type)

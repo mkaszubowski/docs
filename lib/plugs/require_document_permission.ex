@@ -23,6 +23,7 @@ defmodule Docs.Plugs.RequireDocumentPermission do
   defp not_authorized(conn) do
     conn
     |> put_flash(:error, "You don't have permissions to do that")
+    |> halt()
     |> redirect(to: "/")
   end
 
