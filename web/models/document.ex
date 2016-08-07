@@ -14,8 +14,8 @@ defmodule Docs.Document do
     has_many :users, through: [:invitations, :user]
   end
 
-  @required_fields ~w(name)
-  @optional_fields ~w(content owner_id)
+  @required_fields ~w(name owner_id)
+  @optional_fields ~w(content)
 
   def changeset(model, params \\ :empty) do
     model
@@ -26,7 +26,6 @@ defmodule Docs.Document do
   end
 
   # create the invitation only is model is not saved yet
-
   defp create_owner_invitation(
     %Ecto.Changeset{model: %Document{id: nil}} = model) do
 
@@ -37,7 +36,7 @@ defmodule Docs.Document do
           :invitations,
           [%Invitation{user_id: owner_id, type: "edit"}]
         )
-      :empty -> model
+      _ -> model
     end
   end
   defp create_owner_invitation(model), do: model

@@ -31,4 +31,11 @@ defmodule Docs.DocumentTest do
 
     assert changeset.valid?
   end
+
+  test "is invalid without the owner id" do
+    changeset = Document.changeset(%Document{}, %{name: "Document"})
+
+    refute changeset.valid?
+    assert changeset.errors[:owner_id] == "can't be blank"
+  end
 end
