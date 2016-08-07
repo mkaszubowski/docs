@@ -38,10 +38,11 @@ defmodule Docs.Mixfile do
      {:gettext, "~> 0.9"},
      {:comeonin, "~> 1.0"},
      {:cowboy, "~> 1.0"},
-     {:expr, "~> 0.1.0"},
+     {:expr, git: "https://github.com/Rob-bie/expr.git"},
      {:ueberauth_google, "~> 0.2"},
      {:mailgun, "~> 0.1.2"},
      {:poison, "~> 2.1", override: true},
+     {:credo, "~> 0.4", only: [:dev, :test]},
    ]
   end
 
