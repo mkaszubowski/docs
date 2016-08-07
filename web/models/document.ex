@@ -1,7 +1,7 @@
 defmodule Docs.Document do
   use Docs.Web, :model
 
-  alias Docs.Invitation
+  alias Docs.{Document, Invitation}
 
   schema "documents" do
     field :name, :string
@@ -22,24 +22,25 @@ defmodule Docs.Document do
     |> cast(params, @required_fields, @optional_fields)
     |> update_change(:name, &String.lstrip/1)
     |> validate_length(:name, min: 1, message: "Can't be blank")
-    |> create_owner_invitation(params)
+    |> create_owner_invitation()
   end
 
-  defp create_owner_invitation(model, params) do
-    case model.model.id do
-      nil ->
-        case params do
-          %{"owner_id" => owner_id} ->
-            put_assoc(
-              model,
-              :invitations,
-              [%Invitation{user_id: owner_id, type: "edit"}]
-            )
-          :empty -> model
-        end
-      _ -> model
+  # create the invitation only is model is not saved yet
+
+  defp create_owner_invitation(
+    %Ecto.Changeset{model: %Document{id: nil}} = model) do
+
+    case model.changes do
+      %{owner_id: owner_id} ->
+        put_assoc(
+          model,
+          :invitations,
+          [%Invitation{user_id: owner_id, type: "edit"}]
+        )
+      :empty -> model
     end
   end
+  defp create_owner_invitation(model), do: model
 
   def for_user(query, user_id) do
     from(d in query,

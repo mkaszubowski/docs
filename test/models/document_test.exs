@@ -1,22 +1,33 @@
 defmodule Docs.DocumentTest do
-  use Docs.ModelCase
+  use Docs.ModelCase, async: true
 
   alias Docs.Document
 
-  test "is invalid without the name" do
-    changeset = Document.changeset(%Document{}, %{name: ""})
+  setup do
+    user = insert_user
+
+    basic_attrs = %{"owner_id" => user.id}
+
+    {:ok, basic_attrs: basic_attrs}
+  end
+
+  test "is invalid without the name", %{basic_attrs: basic_attrs} do
+    attrs = Dict.merge(basic_attrs, %{"name" => ""})
+    changeset = Document.changeset(%Document{}, attrs)
 
     refute changeset.valid?
   end
 
-  test "name can't be blank" do
-    changeset = Document.changeset(%Document{}, %{name: "    "})
+  test "name can't be blank", %{basic_attrs: basic_attrs} do
+    attrs = Dict.merge(basic_attrs, %{"name" => "    "})
+    changeset = Document.changeset(%Document{}, attrs)
 
     refute changeset.valid?
   end
 
-  test "is valid without the content" do
-    changeset = Document.changeset(%Document{}, %{name: "document", content: ""})
+  test "is valid without the content", %{basic_attrs: basic_attrs} do
+    attrs = Dict.merge(basic_attrs, %{"name" => "document", "content" => ""})
+    changeset = Document.changeset(%Document{}, attrs)
 
     assert changeset.valid?
   end
