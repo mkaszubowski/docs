@@ -3,6 +3,7 @@ defmodule Docs.DocumentController do
 
   alias Docs.{Repo, Document, Plugs}
 
+  plug :scrub_params, "document" when action in [:create]
   plug Plugs.CheckDocumentPermissions, "id" when action in [:show]
   plug Plugs.RequireDocumentPermission, "view" when action in [:show]
   plug Plugs.CheckDocumentOwner, "id" when action in [:delete]
