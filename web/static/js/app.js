@@ -62,8 +62,6 @@ class App {
       quill.setSelection(selectionStart, selectionEnd);
     });
     channel.on( "update:users", msg => {
-      if (msg["document_id"] != id) { return; }
-
       let list = '';
       msg.users.filter(user => user.id != userId).map((user) => {
         list += `<p class='user-${user.id}'>${user.name}</p>`;

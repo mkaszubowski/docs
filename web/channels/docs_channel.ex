@@ -18,12 +18,11 @@ defmodule Docs.DocsChannel do
 
     user = %{id: user_id, name: user_name}
     users = ViewingUsersList.add_user(document_id, user)
-    update_viewing_users(socket, document_id, users)
+    update_viewing_users(socket, users)
 
     socket =
       socket
       |> assign(:user_id, user_id)
-      |> assign(:document_id, document_id)
 
     {:noreply, socket}
   end
@@ -58,16 +57,13 @@ defmodule Docs.DocsChannel do
     case socket.assigns do
       %{user_id: user_id, document_id: document_id} ->
         users = ViewingUsersList.remove_user(document_id, user_id)
-        update_viewing_users(socket, document_id, users)
+        update_viewing_users(socket, users)
       _ -> :ok
     end
   end
 
-  defp update_viewing_users(socket, document_id, users) do
-    broadcast!(socket, "update:users", %{
-      document_id: document_id,
-      users: users
-    })
+  defp update_viewing_users(socket, users) do
+    broadcast!(socket, "update:users", %{users: users})
   end
 
   defp expressions(content) do
