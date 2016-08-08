@@ -67,7 +67,7 @@ class App {
     });
 
 
-    channel.on( "replace:expression", msg => {
+    channel.on("replace:expression", msg => {
       const expr = '{{' + msg["expression"] + '}}'
       const value = msg["value"][0];
       const positionOffset = expr.length - value.toString().length;

@@ -41,9 +41,14 @@ defmodule Docs.ViewingUsersList do
   ## Server Callbacks
 
   def init(%{document_id: document_id}) do
-    :timer.send_interval(3_000, :after_init)
+    :timer.send_interval(1_000, :after_init)
 
     {:ok, %{users: [], nodes: [], shared_users: %{}, document_id: document_id}}
+  end
+
+  def handle_call(:get_users, _from, state) do
+    users = get_users_from_state(state)
+    {:reply, users, state}
   end
 
   def handle_cast({:add_user, user}, %{users: users} = state) do
@@ -57,6 +62,8 @@ defmodule Docs.ViewingUsersList do
     broadcast_users(state)
 
     new_state = %{state | users: users}
+
+    init_nodes_sync(new_state)
     {:noreply, new_state}
   end
 
@@ -66,12 +73,9 @@ defmodule Docs.ViewingUsersList do
     broadcast_users(state)
 
     new_state = %{state | users: users}
-    {:noreply, new_state}
-  end
 
-  def handle_call(:get_users, _from, state) do
-    users = get_users_from_state(state)
-    {:reply, users, state}
+    init_nodes_sync(new_state)
+    {:noreply, new_state}
   end
 
   def handle_cast({:sync_users, pid}, state) do
@@ -89,24 +93,20 @@ defmodule Docs.ViewingUsersList do
     {:noreply, new_state}
   end
 
-  def handle_info(:after_init, %{users: users, nodes: nodes, document_id: document_id} = state) do
-    new_nodes = Node.list -- nodes
-    nodes = nodes ++ Node.list |> Enum.uniq
+  def handle_info(:after_init,
+      %{users: users, nodes: nodes, document_id: document_id} = state) do
+    case Node.list -- nodes do
+      [] -> {:noreply, state}
+      new_nodes ->
+        for node <- new_nodes, do: Node.monitor(node, true)
 
-    for node <- new_nodes, do: Node.monitor(node, true)
+        nodes = nodes ++ new_nodes |> Enum.uniq
+        new_state = %{state | nodes: nodes}
 
-    name = server_name(document_id)
+        init_nodes_sync(new_state)
 
-    for node <- nodes do
-      case GenServer.whereis(name) do
-        nil -> []
-        _node ->
-          GenServer.cast({name, node}, {:sync_users, self()})
-      end
+        {:noreply, new_state}
     end
-
-    new_state = %{state | nodes: nodes}
-    {:noreply, new_state}
   end
 
   def handle_info({:nodedown, node},
@@ -115,11 +115,11 @@ defmodule Docs.ViewingUsersList do
     shared_users = Map.delete(shared_users, node)
 
     new_state = %{state | nodes: nodes, shared_users: shared_users}
+    init_nodes_sync(new_state)
     broadcast_users(new_state)
 
     {:noreply, new_state}
   end
-
 
   def handle_info(_, state) do
     {:noreply, state}
@@ -132,6 +132,22 @@ defmodule Docs.ViewingUsersList do
       "docs:#{document_id}",
       "update:users",
       %{users: users})
+  end
+
+  defp init_nodes_sync(%{nodes: nodes, document_id: document_id}) do
+    name = server_name(document_id)
+
+    for node <- nodes do
+      parent = self()
+
+      Task.async(fn ->
+        case GenServer.whereis(name) do
+          nil -> []
+          _node ->
+            GenServer.cast({name, node}, {:sync_users, parent})
+        end
+      end)
+    end
   end
 
   defp get_users_from_state(state) do
