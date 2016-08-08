@@ -13,26 +13,19 @@ defmodule Docs.ViewingUsersListTest do
   describe "adding user" do
     test "adds user to state and returns the list of users" do
       user = %{id: 123, name: "Adam"}
+      ViewingUsersList.add_user(@document_id, user)
 
-      assert ViewingUsersList.add_user(@document_id, user) == [user]
+      assert ViewingUsersList.get_users(@document_id) == [user]
     end
   end
 
   describe "removing user" do
     test "removes user from the state and returns the list of users" do
       user = %{id: 123, name: "Adam"}
-      [user] = ViewingUsersList.add_user(@document_id, user)
+      ViewingUsersList.add_user(@document_id, user)
+      ViewingUsersList.remove_user(@document_id, user.id)
 
-      assert ViewingUsersList.remove_user(@document_id, user.id) == []
-    end
-  end
-
-  describe "users list" do
-    test "returns the list of users" do
-      user = %{id: 123, name: "Adam"}
-      [user] = ViewingUsersList.add_user(@document_id, user)
-
-      assert ViewingUsersList.get_users(@document_id) == [user]
+      assert ViewingUsersList.get_users(@document_id) == []
     end
   end
 end

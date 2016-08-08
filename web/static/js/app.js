@@ -39,7 +39,6 @@ class App {
 
         channel.push("new:content", {
           content: quill.getHTML(),
-          id: id,
           position: selectionEnd,
           user_name: userName,
         })
@@ -47,8 +46,6 @@ class App {
     })
 
     channel.on( "new:content", msg => {
-      if (msg["document_id"] != id) { return; }
-
       quill.setHTML(msg['content'])
 
       if (msg['user_name'] != userName) {

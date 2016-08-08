@@ -17,8 +17,7 @@ defmodule Docs.DocsChannel do
     document_id = socket.assigns.document_id
 
     user = %{id: user_id, name: user_name}
-    users = ViewingUsersList.add_user(document_id, user)
-    update_viewing_users(socket, users)
+    ViewingUsersList.add_user(document_id, user)
 
     socket =
       socket
@@ -29,19 +28,17 @@ defmodule Docs.DocsChannel do
 
   def handle_in("new:content", msg, socket) do
     %{
-      "id" => id,
       "content" => content,
       "position" => position,
       "user_name" => user_name
     } = msg
 
     broadcast!(socket, "new:content", %{
-      document_id: id,
       content: content,
       position: position,
       user_name: user_name})
 
-    DocumentSaveServer.update(id, content, socket)
+    DocumentSaveServer.update(socket.assigns.document_id, content, socket)
 
     content
     |> expressions
@@ -56,14 +53,9 @@ defmodule Docs.DocsChannel do
   def terminate(reason, socket) do
     case socket.assigns do
       %{user_id: user_id, document_id: document_id} ->
-        users = ViewingUsersList.remove_user(document_id, user_id)
-        update_viewing_users(socket, users)
+        ViewingUsersList.remove_user(document_id, user_id)
       _ -> :ok
     end
-  end
-
-  defp update_viewing_users(socket, users) do
-    broadcast!(socket, "update:users", %{users: users})
   end
 
   defp expressions(content) do
